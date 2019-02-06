@@ -7,11 +7,11 @@ import { Container } from 'typedi';
 
 const mongoose = require('mongoose');
 
-mongoose.connect( 'mongodb+srv://romain:roro@cluster0-hyej8.mongodb.net/test?retryWrites=true', { 
+mongoose.connect( 'mongodb+srv://romain:roro@cluster0-rxhwm.mongodb.net/ovachat?authMechanism=SCRAM-SHA-1', { 
     useNewUrlParser: true 
   }).then(
-    () => {},
-    err => {}
+    () => { console.log("super")},
+    err => { console.log(err)}
 );
 
 routingUseContainer(Container);
