@@ -13,7 +13,7 @@ export class UserController {
     ){}
 
     /**
-     * 
+     * Create a user in the database
      */
     @Post('/create')
     public async createUser(@Body({ required: true }) user: User, @Res() res: Response ): Promise<undefined | object> {
