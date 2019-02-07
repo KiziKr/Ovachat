@@ -1,4 +1,5 @@
-import { pre, prop, Typegoose } from "typegoose"
+import { pre, prop, Typegoose, instanceMethod} from "typegoose"
+import { compare } from "semver";
 const bcrypt = require('bcrypt');
 
 @pre<User>('save', function (next) {
@@ -8,7 +9,7 @@ const bcrypt = require('bcrypt');
         bcrypt.hash(user.password, 10, function(err, hash) {
             if (err) return next(err);
 
-        // override the cleartext password with the hashed one
+            // override the cleartext password with the hashed one
             user.password = hash;
             next();
         })
@@ -20,6 +21,16 @@ export class User extends Typegoose {
    
     @prop({ required: "Mot de passe requis", minlength:  [3, "trop court"], maxlength: [30, "trop long"] })
     password: string;
+
+    @instanceMethod
+    comparePassword(password: string): Promise<boolean> {
+        var user = this
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, res) => {
+                resolve(res === true)      
+            });
+        });
+    }
 }
 
 export const UserModel = new User().getModelForClass(User);

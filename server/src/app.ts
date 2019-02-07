@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { useExpressServer, Action, useContainer as routingUseContainer } from 'routing-controllers';
 import { useSocketServer  } from 'socket-controllers';
-//import { AuthService } from './api/service/AuthService';
+import { AuthService } from './auth/AuthService';
 
 import { Container } from 'typedi';
 
@@ -29,19 +29,19 @@ useExpressServer(this.exp, {
   routePrefix: "/api",
   defaultErrorHandler: false,
   authorizationChecker: async(action: Action, roles: string[]) => {
-    // const authService = Container.get<AuthService>(AuthService);
+    const authService = Container.get<AuthService>(AuthService);
 
-    // var credential = authService.parseAuthFromRequest(action.request)
+    var credential = authService.parseAuthFromRequest(action.request)
 
-    // if(credential === undefined) {
-    //   return false
-    // }
+    if(credential === undefined) {
+      return false
+    }
 
-    // action.request.username = await authService.validateUser(credential.username, credential.password)
+    action.request.username = await authService.validateUser(credential.username, credential.password)
 
-    // if(action.request.username === undefined) {
-    //   return false
-    // }
+    if(action.request.username === undefined) {
+      return false
+    }
 
     return true
   },
