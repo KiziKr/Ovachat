@@ -71,8 +71,6 @@ export class AuthService {
             return user
         }
 
-        if (user) console.log(user)
-
         return undefined
     }
 }
