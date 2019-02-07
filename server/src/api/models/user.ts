@@ -30,6 +30,9 @@ export class User extends Typegoose {
             });
         });
     }
+
+    @prop({ default: ['visiteur'] })
+    roles: string[]
 }
 
 export const UserModel = new User().getModelForClass(User);

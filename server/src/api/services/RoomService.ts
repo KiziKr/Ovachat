@@ -5,20 +5,23 @@ import { ValidatorService } from '../validators/validatorService'
 
 @Service()
 export class RoomService {
-    private currentUser: User = undefined;
+    /**
+     * 
+     */
+    public async joinRoom(user: User, nameRoom: string, password: string = '') {
+        const room= await this.searchRoom(nameRoom)
 
-    public setUser(user: User) {
-        this.currentUser = user
+        if(room === undefined) {
+            return undefined
+        }
     }
 
     /**
      * 
      */
-    public async createRoom(room: Room): Promise<undefined | object> {
-        if (this.currentUser === undefined) {
-            return undefined
-        }
-
-        return undefined
+    public async searchRoom(nameRoom: string): Promise<Room | undefined> {
+        return await RoomModel.findOne({
+            name: nameRoom
+        })
     }
 }

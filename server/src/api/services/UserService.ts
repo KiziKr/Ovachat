@@ -4,7 +4,6 @@ import { ValidatorService } from '../validators/validatorService'
 
 @Service()
 export class UserService {
-
     /**
      * 
      */

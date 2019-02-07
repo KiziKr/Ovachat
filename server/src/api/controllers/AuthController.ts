@@ -6,6 +6,8 @@ import { UserService } from '../services/UserService'
 
 import { User } from '../models/user'
 
+const jwt = require('jsonwebtoken')
+
 @JsonController('/users')
 export class AuthController {
     constructor(
@@ -35,16 +37,26 @@ export class AuthController {
      */
     @Post("/login")
     public async loginUser(@BodyParam('username') username: string, @BodyParam('password') password: string, @Res() res: Response) {
-        var token = await this.authService.authenticateUser(username, password)
-        
-        var message = { data : 'Authentication failed' , status : 403 }
+        var user = await this.authService.validateUser(username, password)
 
-        if(token) {
-            message.data = token
-            message.status = 200
+        var message = { 
+            data : 'Authentication failed',
+            status : 403 
         }
 
-        return res.status(message.status)
-            .send(message.data)
+        if (user) {
+            var token = jwt.sign({
+                username: user.username,
+                password: password
+            }, 'shhhhh')
+        
+    
+            if(token) {
+                message.data = token
+                message.status = 200
+            }
+        }
+
+        return res.status(message.status).send(message.data)
     }
 }
