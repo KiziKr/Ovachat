@@ -46,22 +46,6 @@ export class AuthService {
     /**
      * 
      */
-    // public async authenticateUser(username: string, password: string): Promise<string | undefined> {
-    //     var user = await this.validateUser(username, password)
-
-    //     if (user === null) {
-    //         return undefined
-    //     }
-
-    //     return jwt.sign({
-    //         username: user.username,
-    //         password: password
-    //     }, 'shhhhh')
-    // }
-
-    /**
-     * 
-     */
     public async validateUser(username: string, password: string): Promise<User | undefined> {
         const user = await UserModel.findOne({
             username: username
