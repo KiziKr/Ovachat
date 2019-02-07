@@ -1,12 +1,26 @@
 import {express} from 'express';
 import { Service } from 'typedi';
 import { User, UserModel } from '../api/models/user'
+import { ExpressDriver } from 'routing-controllers';
 
 const jwt = require('jsonwebtoken')
 
 @Service()
 export class AuthService {
     constructor() {
+    }
+
+    public async getAuth(req: express.Request): Promise<User | undefined> {
+        var credential = this.parseAuthFromRequest(req)
+
+        if(credential === undefined) {
+            return undefined
+        }
+
+        return await this.validateUser(
+            credential.username,
+            credential.password
+        )
     }
 
     /**

@@ -31,19 +31,17 @@ useExpressServer(this.exp, {
   authorizationChecker: async(action: Action, roles: string[]) => {
     const authService = Container.get<AuthService>(AuthService);
 
-    var credential = authService.parseAuthFromRequest(action.request)
-
-    if(credential === undefined) {
-      return false
-    }
-
-    action.request.username = await authService.validateUser(credential.username, credential.password)
+    action.request.username = await authService.getAuth(action.request)
 
     if(action.request.username === undefined) {
       return false
     }
 
     return true
+  },
+  currentUserChecker: async (action: Action) => {
+    const authService = Container.get<AuthService>(AuthService);
+    return await authService.getAuth(action.request)
   },
   cors: true,
   controllers: [__dirname + "/api/controllers/*.ts"]
