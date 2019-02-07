@@ -10,7 +10,7 @@ export class AuthService {
     constructor() {
     }
 
-    public async getAuth(req: express.Request): Promise<User | undefined> {
+    public async currentUserChecker(req: express.Request): Promise<User | undefined> {
         var credential = this.parseAuthFromRequest(req)
 
         if (credential === undefined) {
