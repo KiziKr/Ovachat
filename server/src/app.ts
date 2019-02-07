@@ -1,17 +1,17 @@
 import "reflect-metadata";
 import { useExpressServer, Action, useContainer as routingUseContainer } from 'routing-controllers';
-import { useSocketServer  } from 'socket-controllers';
+import { useSocketServer } from 'socket-controllers';
 import { AuthService } from './auth/AuthService';
 
 import { Container } from 'typedi';
 
 const mongoose = require('mongoose');
 
-mongoose.connect( 'mongodb+srv://romain:roro@cluster0-rxhwm.mongodb.net/ovachat?authMechanism=SCRAM-SHA-1', { 
-    useNewUrlParser: true 
-  }).then(
-    () => { console.log("super")},
-    err => { console.log(err)}
+mongoose.connect('mongodb+srv://romain:roro@cluster0-rxhwm.mongodb.net/ovachat?authMechanism=SCRAM-SHA-1', {
+  useNewUrlParser: true
+}).then(
+  () => { console.log("super") },
+  err => { console.log(err) }
 );
 
 routingUseContainer(Container);
@@ -28,11 +28,11 @@ useSocketServer(this.io, {
 useExpressServer(this.exp, {
   routePrefix: "/api",
   defaultErrorHandler: false,
-  authorizationChecker: async(action: Action, roles: string[]) => {
+  authorizationChecker: async (action: Action, roles: string[]) => {
     const authService = Container.get<AuthService>(AuthService);
     action.request.username = await authService.getAuth(action.request)
 
-    if(action.request.username === undefined) {
+    if (action.request.username === undefined) {
       return false
     }
 
@@ -46,8 +46,8 @@ useExpressServer(this.exp, {
   controllers: [__dirname + "/api/controllers/*.ts"]
 });
 
-this.app.on('connection', function(socket) {
-    console.log("socket connected")
+this.app.on('connection', function (socket) {
+  console.log("socket connected")
 })
 
 

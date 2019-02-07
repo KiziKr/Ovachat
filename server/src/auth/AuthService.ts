@@ -1,4 +1,4 @@
-import {express} from 'express';
+import { express } from 'express';
 import { Service } from 'typedi';
 import { User, UserModel } from '../api/models/user'
 import { ExpressDriver } from 'routing-controllers';
@@ -13,7 +13,7 @@ export class AuthService {
     public async getAuth(req: express.Request): Promise<User | undefined> {
         var credential = this.parseAuthFromRequest(req)
 
-        if(credential === undefined) {
+        if (credential === undefined) {
             return undefined
         }
 
@@ -26,16 +26,16 @@ export class AuthService {
     /**
      * 
      */
-    public parseAuthFromRequest(req: express.Request): { username: string, password: string }  {
+    public parseAuthFromRequest(req: express.Request): { username: string, password: string } {
         const authorization = req.headers['authorization'];
 
-        if(authorization) {
+        if (authorization) {
             var decoded = jwt.verify(authorization, 'shhhhh');
 
-            if(decoded) {
+            if (decoded) {
                 return {
-                    username : decoded.username,
-                    password : decoded.password
+                    username: decoded.username,
+                    password: decoded.password
                 }
             }
         }
@@ -49,13 +49,13 @@ export class AuthService {
     public async authenticateUser(username: string, password: string): Promise<string | undefined> {
         var user = await this.validateUser(username, password)
 
-        if(user === null) {
+        if (user === null) {
             return undefined
         }
 
         return jwt.sign({
-            username : user.username,
-            password : password
+            username: user.username,
+            password: password
         }, 'shhhhh')
     }
 
@@ -67,11 +67,11 @@ export class AuthService {
             username: username
         })
 
-        if(user && await user.comparePassword(password)) {
-           return user
+        if (user && await user.comparePassword(password)) {
+            return user
         }
 
-        if(user) console.log(user)
+        if (user) console.log(user)
 
         return undefined
     }
