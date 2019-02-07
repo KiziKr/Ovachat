@@ -30,7 +30,6 @@ useExpressServer(this.exp, {
   defaultErrorHandler: false,
   authorizationChecker: async(action: Action, roles: string[]) => {
     const authService = Container.get<AuthService>(AuthService);
-
     action.request.username = await authService.getAuth(action.request)
 
     if(action.request.username === undefined) {

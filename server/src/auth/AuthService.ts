@@ -55,7 +55,7 @@ export class AuthService {
 
         return jwt.sign({
             username : user.username,
-            password : user.password
+            password : password
         }, 'shhhhh')
     }
 
@@ -70,6 +70,8 @@ export class AuthService {
         if(user && await user.comparePassword(password)) {
            return user
         }
+
+        if(user) console.log(user)
 
         return undefined
     }

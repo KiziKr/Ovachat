@@ -5,7 +5,6 @@ import { UserService } from '../services/UserService'
 
 import { User } from '../models/user'
 
-@Authorized()
 @JsonController('/users')
 export class UserController {
     constructor(
