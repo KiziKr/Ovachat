@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import { JsonController, Authorized, Post, CurrentUser, Res, Body } from 'routing-controllers'
+import { JsonController, Authorized, Post, CurrentUser, Res, Body, BodyParam } from 'routing-controllers'
 import { User } from '../models/user'
 import { RoomService } from '../services/RoomService'
 import { Room, RoomModel } from '../models/room';
@@ -28,11 +28,18 @@ export class RoomController {
     }
 
     @Post('/delete')
-    public async deleteRoom(@Res() res: Response) {
+    public async deleteRoom(@CurrentUser() user: User, @BodyParam('roomName') roomName: string, @Res() res: Response) {
+        // var room = await this.roomService.searchRoom(roomName)
 
+        // if(room && room.owner === user.username) {
+
+        // }
     }
 
-    @Post('/change')
-    public async changeRoom(@Res() res: Response) {
+    @Post('/join')
+    public async joinRoom(@CurrentUser() user: User,@BodyParam('roomName') roomName: string, @Res() res: Response) {
+        const room = await this.roomService.joinRoom(user, roomName)
+
+        res.send(room)
     }
 }

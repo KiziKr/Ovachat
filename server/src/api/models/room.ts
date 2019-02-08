@@ -1,4 +1,6 @@
-import { pre, prop, Typegoose } from "typegoose"
+import { Ref, pre, arrayProp, prop, Typegoose, instanceMethod, InstanceType} from "typegoose"
+
+import { User } from './user'
 
 @pre<Room>('save', function (next) {
     if (!this.createdAt) this.createdAt = new Date()
@@ -13,16 +15,27 @@ export class Room extends Typegoose {
     name: string
 
     @prop()
-    password: string
+    lock: boolean
 
     @prop({ required: true })
     owner: string
 
-    @prop({default : []})
-    users: string[]
+    @arrayProp({ itemsRef: User })
+    users?: Ref<User>[];
+
+    @instanceMethod
+    addUser(this: InstanceType<Room>, user: User) {
+        if (!this.users) {
+            this.users = [];
+        }
+
+        user.room_id = this._id
+        this.users.push(user);
+        return this.save();
+    }
 
     @prop({ default: ['visiteur', 'membre'] })
-    rolesAccess: string[]
+    roles_access: string[]
 }
 
 export const RoomModel = new Room().getModelForClass(Room);

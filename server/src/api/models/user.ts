@@ -1,5 +1,8 @@
-import { pre, prop, Typegoose, instanceMethod } from "typegoose"
+import { pre, arrayProp, prop, Typegoose, instanceMethod, InstanceType } from "typegoose"
+import { ObjectID } from "bson";
 const bcrypt = require('bcrypt');
+
+import { Room, RoomModel } from './room'
 
 @pre<User>('save', function (next) {
     var user = this;
@@ -33,6 +36,14 @@ export class User extends Typegoose {
 
     @prop({ default: ['visiteur'] })
     roles: string[]
+
+    @prop({default : new ObjectID("5c5d4a9b96b4bd115e586a18")})
+    room_id: ObjectID
+
+    @instanceMethod
+    addRoom(room: InstanceType<Room>) {
+        return room.addUser(this)
+    }
 }
 
 export const UserModel = new User().getModelForClass(User);
