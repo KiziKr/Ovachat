@@ -39,24 +39,19 @@ export class AuthController {
     public async loginUser(@BodyParam('username') username: string, @BodyParam('password') password: string, @Res() res: Response) {
         var user = await this.authService.validateUser(username, password)
 
-        var message = { 
-            data : 'Authentication failed',
-            status : 403 
+        if(user === undefined) {
+            return res.status(403).send({
+                error : {
+                    errmsg : "Authentification failed"
+                }
+            })
         }
 
-        if (user) {
-            var token = jwt.sign({
+        return res.status(200).send({
+            data : jwt.sign({
                 username: user.username,
                 password: password
             }, 'shhhhh')
-        
-    
-            if(token) {
-                message.data = token
-                message.status = 200
-            }
-        }
-
-        return res.status(message.status).send(message.data)
+        })
     }
 }
