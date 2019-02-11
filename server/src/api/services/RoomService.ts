@@ -8,15 +8,25 @@ export class RoomService {
     /**
      * 
      */
-    public async joinRoom(user: User, nameRoom: string) {
+    public async joinRoom(user: User, nameRoom: string): Promise<Room | string[]> {
         const room = await this.searchRoom(nameRoom)
+        var errors: string[] = []
 
-        if(room === undefined) {
-            return undefined
+        if (room === undefined) {
+            errors.push("Channel introuvable")
         }
 
-        return new UserModel(user)
-            .addRoom(new RoomModel(room))
+        var roomModel = new RoomModel(room)
+
+        if (user.room_id.equals(roomModel._id)) {
+            errors.push("Tu fais déjà parti de ce channel")
+        }
+
+        if(errors.length > 0) {
+            return errors
+        }
+
+        return new UserModel(user).addRoom(roomModel)
     }
 
     /**
@@ -28,8 +38,8 @@ export class RoomService {
         })
 
         return (room === null)
-            ?undefined 
-            :room
+            ? undefined
+            : room
     }
 
     /**

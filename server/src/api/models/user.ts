@@ -7,21 +7,24 @@ import { Room, RoomModel } from './room'
 @pre<User>('save', function (next) {
     var user = this;
 
-    if (!user.isModified('password')) return next();
+    if (!user.isModified('password')) {
+        console.log("le mot de passe est :", user.password)
+        return next();
+    }
+
     bcrypt.hash(user.password, 10, function (err, hash) {
         if (err) return next(err);
 
-        // override the cleartext password with the hashed one
         user.password = hash;
         next();
     })
 })
 
 export class User extends Typegoose {
-    @prop({ required: "Pseudo requis", unique: true, minlength: 3, maxlength: 15, match: /[0-9a-z]*/ })
+    @prop({ required: true, unique: true, minlength: 3, maxlength: 15, match: /[0-9a-z]*/ })
     username: string;
 
-    @prop({ required: "Mot de passe requis", minlength: 3, maxlength: 30 })
+    @prop({ required: true, minlength: 3, maxlength: 100 })
     password: string;
 
     @instanceMethod
@@ -41,9 +44,19 @@ export class User extends Typegoose {
     room_id: ObjectID
 
     @instanceMethod
-    addRoom(room: InstanceType<Room>) {
-        return room.addUser(this)
+    addRoom(this: InstanceType<User>, room: InstanceType<Room>): Promise<Room | undefined> {
+        var theRoom = room.addUser(this)
+
+        if(theRoom) {
+            UserModel.findOneAndUpdate({username : this.username}, {room_id : room._id}, {upsert:true}, function(err, doc){
+            });
+        }
+
+        return theRoom
     }
+
+    @prop({default: 0})
+    status: number
 }
 
 export const UserModel = new User().getModelForClass(User);
