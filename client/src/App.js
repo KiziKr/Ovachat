@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import {Provider} from 'react-redux';
-import AuthUser from './components/auth/AuthUser';
+import { connect } from 'react-redux';
+import AuthPage from './components/AuthPage/AuthPage';
 import io from 'socket.io-client';
 import './App.css';
-
-import {store} from './store'
 
 class App extends Component {
   constructor(props) {
@@ -19,13 +17,20 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <Provider store={store}>
-            <AuthUser />
-          </Provider>
+        {(!this.props.loggedIn)?
+            <AuthPage /> : null }
         </header>
       </div>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  const { loggedIn } = state.authReducer
+  return {
+      loggedIn
+  };
+}
+
+const connectedApp = connect(mapStateToProps)(App);
+export { connectedApp as App }; 

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import Login  from './Login'
-import Register from './Register'
+import { RegisterPage, LoginPage }  from './'
 
-class AuthUser extends Component {
+class AuthPage extends Component {
     constructor(props) {
         super(props)
 
@@ -15,15 +14,13 @@ class AuthUser extends Component {
         return(
             <div>
                 {(this.state.login)? 
-                    <div>
-                        <Login/>
+                    <div><LoginPage/>
                         <a href="#" onClick={(e) => {
                             this.setState({ login: false })}}>
                             Pas encore inscrit ?
                         </a>
                     </div>:
-                    <div>
-                    <Register/>
+                    <div><RegisterPage/>
                     <a href="#" onClick={(e) => {
                         this.setState({ login : true })}}>
                         Déjà inscrit ?
@@ -34,4 +31,4 @@ class AuthUser extends Component {
     }
 }
 
-export default AuthUser;
+export default AuthPage

@@ -1,23 +1,25 @@
 import {authConstant} from '../constants'
 
-export const authReducer = (state = {
-    logged : false
-}, action) => {
+const initialState = { loggedIn: false }
+
+export function authReducer(state = initialState, action){
     switch(action.type) {
         case authConstant.LOGIN_REQUEST:
             return {
-                
             }
         case authConstant.LOGIN_SUCCESS:
-            return {
-
-            }
+        return { 
+            ...state,
+            loggedIn: true 
+        }
         case authConstant.LOGIN_FAILURE:
             return {
-                error: action.error
-            } 
+                ...state,
+                error: action.payload
+            }
+        default:
+            return {
+                state
+            }
     }
-    return state
 }
-
-//export default authReducer

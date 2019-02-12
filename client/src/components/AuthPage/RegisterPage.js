@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Input, Icon, Button } from 'antd'
 
-class Register extends Component {
+class RegisterPage extends Component {
     render = () => {
         return(
             <div>
@@ -25,4 +25,4 @@ class Register extends Component {
     }
 }
 
-export default Register;
+export {RegisterPage}

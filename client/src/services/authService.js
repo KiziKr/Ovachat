@@ -1,4 +1,12 @@
-import {myaxios} from '../myaxios'
+import axios from 'axios'
+
+axios.defaults.baseURL = 'http://localhost:3001/api'
+
+let config = { 
+    headers: {
+        'Content-Type': 'application/json'
+    }
+}
 
 export const authService = {
     authHeader,
@@ -14,7 +22,7 @@ function authHeader() {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.token) {
-        myaxios.headers['authorization'] = 'Bearer ' + user.token
+        config.headers['authorization'] = 'Bearer ' + user.token
         return true
     }
 
@@ -25,14 +33,14 @@ function authHeader() {
  * 
  */
 async function login(username, password) {
-    var token = await myaxios.post('/users/login', {
+    var token = await axios.post('/users/login', {
         username: username,
         password: password
     }, 
-    myaxios.headers)
+    config)
 
     if(token.data) {
-        myaxios.headers['authorization'] = 'Bearer ' + token.data
+        config.headers['authorization'] = 'Bearer ' + token.data
         return true
     }
 
@@ -47,5 +55,5 @@ function logout() {
  * 
  */
 async function register() {
-    return await myaxios.post('/users/post', null, myaxios.headers)
+    return await axios.post('/users/post', null, config)
 }

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Form, Input, Icon, Button } from 'antd'
+import { connect } from 'react-redux';
 import {authAction} from '../../actions/authAction'
 
-class Login extends Component {
+class LoginPage extends Component {
     constructor(props) {
         super(props)
 
@@ -14,17 +15,14 @@ class Login extends Component {
     }
 
     componentDidMount = () => {
-        const login = authAction.login("KiziKr", "0000");
-        login(this.props.dispatch);
-
-        /*
+        
         (async () => {
             try {
-                await this.props.dispatch(authAction.login("KiziKr", "0000"))
+                //this.props.dispatch(await authAction.login("KiziKr", "0000"))
             } catch (e) {
+                console.log(e)
             }
-        })();
-        */
+        })()    
     }
 
     handleSubmit = (event) => {
@@ -58,4 +56,12 @@ class Login extends Component {
     }
 }
 
-export default Login;
+function mapStateToProps(state) {
+    const { loggedIn } = state.authReducer
+    return {
+        loggedIn
+    };
+}
+
+const connectedLoginPage = connect(mapStateToProps)(LoginPage);
+export { connectedLoginPage as LoginPage }; 
