@@ -1,20 +1,34 @@
 import React, { Component } from 'react';
 import Login  from './Login'
-import Registry  from './Registry'
+import Register from './Register'
 
 class AuthUser extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
         this.state = {
             login : true
         }
     }
 
-    render() {
+    render = () => {
         return(
             <div>
-                {(this.state.login) ? <Login/> : <Registry/>}
+                {(this.state.login)? 
+                    <div>
+                        <Login/>
+                        <a href="#" onClick={(e) => {
+                            this.setState({ login: false })}}>
+                            Pas encore inscrit ?
+                        </a>
+                    </div>:
+                    <div>
+                    <Register/>
+                    <a href="#" onClick={(e) => {
+                        this.setState({ login : true })}}>
+                        Déjà inscrit ?
+                    </a>
+                </div>}
             </div>
         )
     }

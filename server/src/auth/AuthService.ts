@@ -30,12 +30,16 @@ export class AuthService {
         const authorization = req.headers['authorization'];
 
         if (authorization) {
-            var decoded = jwt.verify(authorization, 'shhhhh');
+            var test = authorization.split(' ')
 
-            if (decoded) {
-                return {
-                    username: decoded.username,
-                    password: decoded.password
+            if(test[1]) {
+                var decoded = jwt.verify(test[1], 'shhhhh');
+    
+                if (decoded) {
+                    return {
+                        username: decoded.username,
+                        password: decoded.password
+                    }
                 }
             }
         }

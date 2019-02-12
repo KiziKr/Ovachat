@@ -1,13 +1,23 @@
-export default authReducer = (state = {
-    login : false
+import {authConstant} from '../constants'
+
+export const authReducer = (state = {
+    logged : false
 }, action) => {
     switch(action.type) {
-        case 'LOGIN':
-            state = {
-                ...state,
-                login : action.playload
+        case authConstant.LOGIN_REQUEST:
+            return {
+                
             }
-            break;
+        case authConstant.LOGIN_SUCCESS:
+            return {
+
+            }
+        case authConstant.LOGIN_FAILURE:
+            return {
+                error: action.error
+            } 
     }
     return state
 }
+
+//export default authReducer

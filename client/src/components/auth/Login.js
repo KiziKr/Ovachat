@@ -1,30 +1,37 @@
 import React, { Component } from 'react';
 import { Form, Input, Icon, Button } from 'antd'
-import { login, create } from '../../axios'
+import {authAction} from '../../actions/authAction'
 
 class Login extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
         this.state = {
-            login : false
+            username: '',
+            password: '',
+            submitted: false
         }
+    }
+
+    componentDidMount = () => {
+        const login = authAction.login("KiziKr", "0000");
+        login(this.props.dispatch);
+
+        /*
+        (async () => {
+            try {
+                await this.props.dispatch(authAction.login("KiziKr", "0000"))
+            } catch (e) {
+            }
+        })();
+        */
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
-
-        (async () => {
-            try {
-                this.setState({
-                    login : await login("KiziKr", "0000")
-                })
-            } catch (e) {
-            }
-        })();
     }
 
-    render() {
+    render = () => {
         return(
             <div id="auth-login">
                 <div className="wrapper-errors">
@@ -44,16 +51,6 @@ class Login extends Component {
                     </Form.Item>
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         Log in
-                    </Button>
-                    <Button type="primary" onClick={(e) => {
-                           (async () => {
-                            try {
-                                console.log(await create())
-                            } catch (e) {
-                            }
-                        })();
-                    }}>
-                        Post
                     </Button>
                 </Form>
             </div>
