@@ -8,6 +8,7 @@ let mainWindow;
 
 createWindow = () => {
 	mainWindow = new BrowserWindow({
+		title: 'Ovachat',
 		backgroundColor: '#F7F7F7',
 		minWidth: 880,
 		show: false,

@@ -4,6 +4,8 @@ import AuthPage from './components/AuthPage/AuthPage';
 import io from 'socket.io-client';
 import './App.css';
 
+import {authAction} from './actions/authAction'
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -18,7 +20,15 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
         {(!this.props.loggedIn)?
-            <AuthPage /> : null }
+            <AuthPage /> : <button onClick={(e) => {
+              (async () => {
+                try {
+                  this.props.dispatch(await authAction.logout())
+                }catch(e) {
+                  console.log(e)
+                }
+              })()
+            }}>Se deco</button> }
         </header>
       </div>
     );

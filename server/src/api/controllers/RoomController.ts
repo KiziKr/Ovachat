@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import { JsonController, Authorized, Post, CurrentUser, Res, Body, BodyParam } from 'routing-controllers'
+import { JsonController, Authorized, Post, CurrentUser, Res, Body, BodyParam, Get } from 'routing-controllers'
 import { User } from '../models/user'
 import { RoomService } from '../services/RoomService'
 import { Room, RoomModel } from '../models/room';
@@ -67,5 +67,10 @@ export class RoomController {
         }
 
         return res.status(200).send(room)
+    }
+
+    @Get('/test')
+    public test(@Res() res: Response) {
+        return res.send({data: "Ok"})
     }
 }

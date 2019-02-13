@@ -14,39 +14,64 @@ class LoginPage extends Component {
         }
     }
 
-    componentDidMount = () => {
-        
+    componentDidMount() {
         (async () => {
             try {
-                //this.props.dispatch(await authAction.login("KiziKr", "0000"))
+                this.props.dispatch(await authAction.autoLogin())
             } catch (e) {
-                console.log(e)
             }
-        })()    
+        })()
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
+
+        const {username, password} = this.state
+
+        this.setState({
+            submitted: true
+        })
+
+        if(username && password) {
+            (async () => {
+                try {
+                    this.props.dispatch(await authAction.login(username, password))
+                } catch (e) {
+                    console.log(e)
+                }
+            })()    
+        }
     }
 
     render = () => {
+        const {username, password, submitted} = this.state
+
         return(
             <div id="auth-login">
                 <div className="wrapper-errors">
-                    <ul className="list-errors">
-                        {/* {this.state.errors.map((error, key) => {
-                            <li key={key}>{error}</li>    
-                        })} */}
-                    </ul>
                 </div>
-                <h3>Login</h3>
+                <h3>Se connecter</h3>
                 <Form className="auth-form" onSubmit={this.handleSubmit}>
                     <Form.Item>
-                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+                        <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" onChange={(e) => {
+                            this.setState({
+                                username: e.target.value
+                            })
+                        }} />
                     </Form.Item>
+                    {submitted && !username &&
+                        <div>Le pseudo est requis</div>
+                    }
                     <Form.Item>
-                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+                        <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" onChange={(e) => {
+                            this.setState({
+                                password: e.target.value
+                            })
+                        }}/>
                     </Form.Item>
+                    {submitted && !password &&
+                        <div>Le mot de passe est requis</div>
+                    }
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         Log in
                     </Button>

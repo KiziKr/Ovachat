@@ -1,7 +1,7 @@
 import { express } from 'express';
 import { Service } from 'typedi';
 import { User, UserModel } from '../api/models/user'
-import { ExpressDriver } from 'routing-controllers';
+import { ObjectID } from 'bson';
 
 const jwt = require('jsonwebtoken')
 
@@ -17,28 +17,32 @@ export class AuthService {
             return undefined
         }
 
-        return await this.validateUser(
-            credential.username,
-            credential.password
-        )
+        const user = await UserModel.findOne({
+            _id: credential.id
+        })
+
+        if(user) {
+            return user
+        }
+
+        return undefined
     }
 
     /**
      * 
      */
-    public parseAuthFromRequest(req: express.Request): { username: string, password: string } {
+    public parseAuthFromRequest(req: express.Request): { id: ObjectID | undefined } {
         const authorization = req.headers['authorization'];
 
         if (authorization) {
             var test = authorization.split(' ')
 
-            if(test[1]) {
+            if(test[0] === 'Bearer' && test[1]) {
                 var decoded = jwt.verify(test[1], 'shhhhh');
     
                 if (decoded) {
                     return {
-                        username: decoded.username,
-                        password: decoded.password
+                        id: decoded.id
                     }
                 }
             }

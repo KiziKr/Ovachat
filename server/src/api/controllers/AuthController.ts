@@ -1,10 +1,10 @@
-import { Authorized, JsonController, Post, Body, BodyParam, Res } from 'routing-controllers';
+import { Authorized, JsonController, Post, Body, BodyParam, Res, CurrentUser } from 'routing-controllers';
 import {Response} from "express";
 
 import { AuthService } from '../../auth/AuthService'
 import { UserService } from '../services/UserService'
 
-import { User } from '../models/user'
+import { User, UserModel } from '../models/user'
 
 const jwt = require('jsonwebtoken')
 
@@ -14,6 +14,26 @@ export class AuthController {
         private authService: AuthService,
         private userService: UserService
     ){}
+
+    /**
+     * 
+     */
+    @Post('/verify')
+    public async verifyUser(@CurrentUser() user: User, @Res() res: Response): Promise<User | undefined> {
+        if(user) {
+            return res.send({
+                data: {
+                    username: user.username
+                }
+            })
+        } else {
+            return res.send({
+                error: {
+                    errmsg: "Not authentified"
+                }
+            })
+        }
+    }
 
     /**
      * 
@@ -42,16 +62,20 @@ export class AuthController {
         if(user === undefined) {
             return res.status(403).send({
                 error : {
-                    errmsg : "Authentification failed"
+                    errmsg : "Pseudo ou mot de passe incorrect"
                 }
             })
         }
 
         return res.status(200).send({
-            data : jwt.sign({
+            data : {
                 username: user.username,
-                password: password
-            }, 'shhhhh')
+                token : jwt.sign({
+                    id: new UserModel(user)._id
+                }, 'shhhhh', {
+                    expiresIn: '2d'
+                })
+            }
         })
     }
 }

@@ -2,7 +2,7 @@ import axios from 'axios'
 
 axios.defaults.baseURL = 'http://localhost:3001/api'
 
-let config = { 
+var config = { 
     headers: {
         'Content-Type': 'application/json'
     }
@@ -18,37 +18,49 @@ export const authService = {
 /**
  * 
  */
-function authHeader() {
+async function authHeader() {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.token) {
         config.headers['authorization'] = 'Bearer ' + user.token
-        return true
+        var res = await axios.post('users/verify',
+            null,
+            config)
+
+        if(res.data) {
+            return user   
+        }
+
+        logout()
     }
 
-    return false
+    return null
 }
 
 /**
  * 
  */
 async function login(username, password) {
-    var token = await axios.post('/users/login', {
+    var user = await axios.post('/users/login', {
         username: username,
         password: password
     }, 
     config)
 
-    if(token.data) {
-        config.headers['authorization'] = 'Bearer ' + token.data
-        return true
+    if(user.data) {
+        localStorage.setItem('user', JSON.stringify(user.data.data))
+        await authHeader()
     }
 
-    return false
+    return user
 }
 
+/**
+ * 
+ */
 function logout() {
-
+    localStorage.removeItem('user');
+    delete config.headers.authorization
 }
 
 /**
