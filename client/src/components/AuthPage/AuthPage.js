@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { RegisterPage, LoginPage }  from './'
+import './index.css'
 
 class AuthPage extends Component {
     constructor(props) {
@@ -15,13 +16,13 @@ class AuthPage extends Component {
             <div>
                 {(this.state.login)? 
                     <div><LoginPage/>
-                        <a href="#" onClick={(e) => {
+                        <a href="#" className="auth-lien" onClick={(e) => {
                             this.setState({ login: false })}}>
                             Pas encore inscrit ?
                         </a>
                     </div>:
                     <div><RegisterPage/>
-                    <a href="#" onClick={(e) => {
+                    <a href="#" className="auth-lien" onClick={(e) => {
                         this.setState({ login : true })}}>
                         Déjà inscrit ?
                     </a>

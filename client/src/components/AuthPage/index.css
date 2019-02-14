@@ -1,0 +1,16 @@
+.auth-item input{
+    height: 25px;
+    width: 250px;
+    font-size: 15px;
+    color: rgb(22, 22, 22);
+}
+
+.auth-form button {
+    height: 25px;
+    font-size: 15px;
+    color: rgb(22, 22, 22);
+}
+
+.auth-lien {
+    font-size: 15px;
+}
