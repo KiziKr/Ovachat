@@ -14,3 +14,8 @@
 .auth-lien {
     font-size: 15px;
 }
+
+.text-danger {
+    padding: 2px;
+    font-size: 15px;
+}

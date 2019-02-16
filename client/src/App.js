@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import AuthPage from './components/AuthPage/AuthPage';
+import {AuthPage} from './components/AuthPage/AuthPage';
 import io from 'socket.io-client';
 import './App.css';
 
@@ -39,7 +39,7 @@ function mapStateToProps(state) {
   const { loggedIn } = state.authReducer
   return {
       loggedIn
-  };
+  }
 }
 
 const connectedApp = connect(mapStateToProps)(App);

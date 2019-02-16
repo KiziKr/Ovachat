@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Icon, Button } from 'antd'
 import { connect } from 'react-redux';
 import {authAction} from '../../actions/authAction'
+import {alertAction} from '../../actions/alertAction'
 import './index.css'
 
 class LoginPage extends Component {
@@ -34,13 +35,7 @@ class LoginPage extends Component {
         })
 
         if(username && password) {
-            (async () => {
-                try {
-                    this.props.dispatch(await authAction.login(username, password))
-                } catch (e) {
-                    console.log(e)
-                }
-            })()    
+            this.props.dispatch(authAction.login(username, password))
         }
     }
 
@@ -61,7 +56,7 @@ class LoginPage extends Component {
                         }} />
                     </Form.Item>
                     {submitted && !username &&
-                        <div>Le pseudo est requis</div>
+                        <div className="text-danger">Pseudo requis</div>
                     }
                     <Form.Item className="auth-item">
                         <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Mot de passe" onChange={(e) => {
@@ -71,7 +66,7 @@ class LoginPage extends Component {
                         }}/>
                     </Form.Item>
                     {submitted && !password &&
-                        <div className="help-block">Le mot de passe est requis</div>
+                        <div className="text-danger">Mot de passe requis</div>
                     }
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         Valider

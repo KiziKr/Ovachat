@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { RegisterPage, LoginPage }  from './'
 import './index.css'
 
@@ -13,7 +14,9 @@ class AuthPage extends Component {
 
     render = () => {
         return(
-            <div>
+            <div id="auth-page">
+                {this.props.message &&
+                    <div className="error">{this.props.message}</div>}
                 {(this.state.login)? 
                     <div><LoginPage/>
                         <a href="#" className="auth-lien" onClick={(e) => {
@@ -32,4 +35,13 @@ class AuthPage extends Component {
     }
 }
 
-export default AuthPage
+function mapStateToProps(state) {
+    const { type, message} = state.alertReducer
+    return {
+        type,
+        message
+    }
+}
+  
+const connectedAuthPage = connect(mapStateToProps)(AuthPage);
+export { connectedAuthPage as AuthPage }; 

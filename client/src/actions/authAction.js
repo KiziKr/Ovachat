@@ -1,10 +1,12 @@
 import {authService} from '../services'
 import {authConstant} from '../constants'
+import {alertAction} from './alertAction'
 
 export const authAction = {
     autoLogin,
     login,
-    logout
+    logout,
+    register
 }
 
 /**
@@ -26,26 +28,31 @@ async function autoLogin() {
     }
 }
 
-/**
- * 
- */
-async function login(username, password) {
-    const res = await authService.login(username, password)
+function login(username, password) {
+    return async dispatch => {
+        const auth = await authService.login(username, password).catch(err=> JSON.parse(err.response.request.response))
 
-    if(res.data) {
-        return {
-            type: authConstant.LOGIN_SUCCESS, 
-            payload: res.data.successmsg
+        if(auth.data) {
+            dispatch({type: authConstant.LOGIN_SUCCESS})
         }
-    }else {
-        return {
-            type: authConstant.LOGIN_FAILURE,
-            payload: res.error
+        
+        if(auth.error){
+            dispatch({type: authConstant.LOGIN_FAILURE})
+            dispatch(alertAction.error(auth.error.errmsg))
         }
     }
 }
 
+
 async function logout() {
     authService.logout()
     return {type: authConstant.LOGOUT}
+}
+
+/**
+ * 
+ */
+async function register(user) {
+    const res = await authService.register(user)
+    console.log(res)
 }

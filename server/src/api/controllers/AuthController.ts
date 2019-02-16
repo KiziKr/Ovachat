@@ -38,12 +38,8 @@ export class AuthController {
     /**
      * 
      */
-    @Post('/registry')
-    public async registry(@Body() user: User, @BodyParam('confirmPassword') password: string, @Res() res: Response ): Promise<undefined | object> {
-        if(user.password !== password) {
-            res.send("Les mots de passe ne sont pas identique")
-        }
-
+    @Post('/register')
+    public async register(@Body() user: User, @Res() res: Response ): Promise<undefined | object> {
         try {
             var test = await this.userService.createUser(user);
             return res.send(test)
