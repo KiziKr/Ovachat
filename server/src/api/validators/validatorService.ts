@@ -12,7 +12,7 @@ export class ValidatorService {
             return err
         })
 
-        if (validation.status === "failed") {
+        if (validation.success === false) {
             return validation
         }
 
@@ -29,13 +29,13 @@ export class ValidatorService {
             entity.validate().then(res => {
                 return resolve({
                     type: 'validation',
-                    status: 'success',
+                    success: true,
                     data: res
                 })
             }).catch(err => {
                 return reject({
                     type: 'validation',
-                    status: 'failed',
+                    success: false,
                     errors: err.errors
                 })
             })
@@ -51,13 +51,13 @@ export class ValidatorService {
                 if (next) {
                     return reject({
                         type: "save",
-                        status: 'failed',
+                        success: false,
                         errors: next
                     })
                 }
                 return resolve({
                     type: "save",
-                    status: 'success'
+                    success: true
                 })
             })
         })

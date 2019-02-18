@@ -58,9 +58,9 @@ function logout() {
 /**
  * 
  */
-async function register(user) {
+async function register(data) {
     return await myaxios.post('/users/register',
-        user,
+        data,
         myaxios.defaults.config
     )
 }

@@ -19,3 +19,12 @@
     padding: 2px;
     font-size: 15px;
 }
+
+.alert-error {
+    padding: 15px;
+    background-color: rgb(136, 43, 43);
+    border: 1px solid rgb(3, 3, 3);
+    font-size: 16px;
+    color: rgb(3, 3, 3);
+
+}

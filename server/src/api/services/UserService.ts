@@ -8,8 +8,14 @@ export class UserService {
      * 
      */
     public async createUser(user: User): Promise<undefined | object> {
-        return await ValidatorService.completeEntityValidation(
+        const data = await ValidatorService.completeEntityValidation(
             new UserModel(user)
         )
+
+        if(data.success === true) {
+            return null
+        }
+
+        return data.errors
     }
 }

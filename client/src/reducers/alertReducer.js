@@ -1,6 +1,6 @@
 import {alertConstant} from '../constants'
 
-export function alertReducer(state = {type:'', message:''}, action) {
+export function alertReducer(state = {type:'', message:'', messageList:[]}, action) {
     switch(action.type) {
         case alertConstant.SUCCESS:
             return {
@@ -17,7 +17,7 @@ export function alertReducer(state = {type:'', message:''}, action) {
         case alertConstant.ERRORS_TAB:
             return {
                 ...state,
-                type: 'alert-errors',
+                type: 'alert-error',
                 messageList: action.payload
             }
         case alertConstant.CLEAR:

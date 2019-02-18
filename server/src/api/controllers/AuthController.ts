@@ -40,11 +40,23 @@ export class AuthController {
      */
     @Post('/register')
     public async register(@Body() user: User, @Res() res: Response ): Promise<undefined | object> {
-        try {
-            var test = await this.userService.createUser(user);
-            return res.send(test)
-        } catch(err) {
-            return res.send(err)
+        const data = await this.userService.createUser(user)
+
+        if(data) {
+            return res.status(400).send({
+                data: {
+                    errors: data
+                },
+                status: 400,
+                success: false
+            })
+        }
+        else {
+            return res.status(200).send({
+                data: {},
+                status: 200,
+                success: true
+            })
         }
     }
 
@@ -53,10 +65,10 @@ export class AuthController {
      */
     @Post("/login")
     public async loginUser(@BodyParam('username') username: string, @BodyParam('password') password: string, @Res() res: Response) {
-        var user = await this.authService.validateUser(username, password)
+        const user = await this.authService.validateUser(username, password)
 
         if(user === undefined) {
-            return res.send({
+            return res.status(401).send({
                 data : {
                     errmsg : "Pseudo ou mot de passe incorrect"
                 }, 
@@ -65,7 +77,7 @@ export class AuthController {
             })
         }
 
-        return res.send({
+        return res.status(200).send({
             data : {
                 username: user.username,
                 token : jwt.sign({

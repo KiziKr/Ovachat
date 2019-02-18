@@ -28,12 +28,16 @@ async function autoLogin() {
     }
 }
 
+/**
+ * 
+ */
 function login(username, password) {
     return async dispatch => {
         const auth = await authService.login(username, password).catch(err=> JSON.parse(err.response.request.response))
 
         if(auth.success === true) {
             dispatch({type: authConstant.LOGIN_SUCCESS})
+            dispatch(alertAction.clear())
         }
         
         if(auth.success === false){
@@ -43,7 +47,9 @@ function login(username, password) {
     }
 }
 
-
+/**
+ * 
+ */
 async function logout() {
     authService.logout()
     return {type: authConstant.LOGOUT}
@@ -52,6 +58,24 @@ async function logout() {
 /**
  * 
  */
-async function register(user) {
-    const res = await authService.register(user)
+function register(user) {
+    return async dispatch => {
+        const res = await authService.register(user).catch(err=> JSON.parse(err.response.request.response))
+        if(res.success === false) {
+            var errors = res.data.errors
+
+            if(Object.keys(errors).length > 1) {
+                var err = []
+
+                for(var i in errors) {
+                    err.push(errors[i].message)
+                }
+
+                dispatch(alertAction.errorTab(err))
+            }
+            else {
+               dispatch(alertAction.error(errors[Object.keys(errors)[0]].message))
+            }
+        }
+    }
 }

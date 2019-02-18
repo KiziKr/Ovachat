@@ -36,7 +36,7 @@ function error(message) {
  */
 function errorTab(tab) {
     return {
-        type: alertConstant.ERROR_TAB,
+        type: alertConstant.ERRORS_TAB,
         payload: tab
     }
 }
@@ -46,6 +46,6 @@ function errorTab(tab) {
  */
 function clear() {
     return {
-        type: alertConstant.ERROR
+        type: alertConstant.CLEAR
     }
 }

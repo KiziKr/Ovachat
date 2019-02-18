@@ -17,8 +17,10 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
+        
         (async () => {
             try {
+                this.props.dispatch(alertAction.clear())
                 this.props.dispatch(await authAction.autoLogin())
             } catch (e) {
             }
@@ -44,8 +46,6 @@ class LoginPage extends Component {
 
         return(
             <div id="auth-login">
-                <div className="wrapper-errors">
-                </div>
                 <h3>Se connecter</h3>
                 <Form className="auth-form" onSubmit={this.handleSubmit}>
                     <Form.Item className="auth-item">
