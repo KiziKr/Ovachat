@@ -32,13 +32,13 @@ function login(username, password) {
     return async dispatch => {
         const auth = await authService.login(username, password).catch(err=> JSON.parse(err.response.request.response))
 
-        if(auth.data) {
+        if(auth.success === true) {
             dispatch({type: authConstant.LOGIN_SUCCESS})
         }
         
-        if(auth.error){
+        if(auth.success === false){
             dispatch({type: authConstant.LOGIN_FAILURE})
-            dispatch(alertAction.error(auth.error.errmsg))
+            dispatch(alertAction.error(auth.data.errmsg))
         }
     }
 }
@@ -54,5 +54,4 @@ async function logout() {
  */
 async function register(user) {
     const res = await authService.register(user)
-    console.log(res)
 }

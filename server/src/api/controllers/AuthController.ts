@@ -56,22 +56,26 @@ export class AuthController {
         var user = await this.authService.validateUser(username, password)
 
         if(user === undefined) {
-            return res.status(403).send({
-                error : {
+            return res.send({
+                data : {
                     errmsg : "Pseudo ou mot de passe incorrect"
-                }
+                }, 
+                status: 401,
+                success: false
             })
         }
 
-        return res.status(200).send({
+        return res.send({
             data : {
                 username: user.username,
                 token : jwt.sign({
                     id: new UserModel(user)._id
                 }, 'shhhhh', {
-                    expiresIn: '2d'
+                    expiresIn: '1d'
                 })
-            }
+            },
+            status: 200,
+            success: true
         })
     }
 }

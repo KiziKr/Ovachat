@@ -39,12 +39,12 @@ async function login(username, password) {
     }, 
     myaxios.defaults.config)
 
-    if(user.data) {
+    if(user.data.success === true) {
         localStorage.setItem('user', JSON.stringify(user.data.data))
         await authHeader()
     }
 
-    return user
+    return user.data
 }
 
 /**
