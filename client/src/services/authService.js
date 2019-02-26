@@ -1,4 +1,4 @@
-import myaxios from '../myaxios'
+import API from '../myaxios'
 
 export const authService = {
     authHeader,
@@ -14,10 +14,10 @@ async function authHeader() {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.token) {
-        myaxios.defaults.config.headers['authorization'] = 'Bearer ' + user.token
-        var res = await myaxios.post('users/verify',
+        API.defaults.config.headers['authorization'] = 'Bearer ' + user.token
+        var res = await API.post('users/verify',
             null,
-            myaxios.defaults.config)
+            API.defaults.config)
 
         if(res.data) {
             return user   
@@ -33,11 +33,11 @@ async function authHeader() {
  * 
  */
 async function login(username, password) {
-    var user = await myaxios.post('/users/login', {
+    var user = await API.post('/users/login', {
         username: username,
         password: password
-    }, 
-    myaxios.defaults.config)
+    },
+    API.defaults.config)
 
     if(user.data.success === true) {
         localStorage.setItem('user', JSON.stringify(user.data.data))
@@ -52,15 +52,15 @@ async function login(username, password) {
  */
 function logout() {
     localStorage.removeItem('user');
-    delete myaxios.defaults.config.headers.authorization
+    delete API.defaults.config.headers.authorization
 }
 
 /**
  * 
  */
 async function register(data) {
-    return await myaxios.post('/users/register',
+    return await API.post('/users/register',
         data,
-        myaxios.defaults.config
+        API.defaults.config
     )
 }

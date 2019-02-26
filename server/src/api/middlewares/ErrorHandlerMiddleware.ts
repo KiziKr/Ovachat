@@ -3,14 +3,12 @@ import { ExpressErrorMiddlewareInterface, HttpError, Middleware } from 'routing-
 
 @Middleware({ type: 'after' })
 export class ErrorHandlerMiddleware implements ExpressErrorMiddlewareInterface {
-
-    constructor(
-    ) {}
-
     public error(error: HttpError, req, res, next): void {
         res.status(error.httpCode || 500);
         res.json({
+            method: req.method,
             name: error.name,
+            path: req.path,
             message: error.message,
             errors: error['errors'] || []
         })

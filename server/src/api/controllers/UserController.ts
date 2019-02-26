@@ -1,8 +1,8 @@
-import { Authorized, JsonController, Post, Body, Res } from 'routing-controllers';
+import { Authorized, JsonController, Get, Post, Body, Res } from 'routing-controllers';
 import { Response } from "express";
 
 import { UserService } from '../services/UserService'
-import { User } from '../models/user'
+import { User, UserModel } from '../models/user'
 
 @JsonController('/users')
 export class UserController {

@@ -1,4 +1,4 @@
-import {authService} from '../services'
+import {authService} from '../../services'
 import {authConstant} from '../constants'
 import {alertAction} from './alertAction'
 

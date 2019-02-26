@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Input, Icon, Button } from 'antd'
 import { connect } from 'react-redux';
-import {authAction} from '../../actions/authAction'
-import {alertAction} from '../../actions/alertAction'
+import {authAction} from '../../redux/actions/authAction'
+import {alertAction} from '../../redux/actions/alertAction'
 import './index.css'
 
 class LoginPage extends Component {
@@ -17,7 +17,6 @@ class LoginPage extends Component {
     }
 
     componentDidMount() {
-        
         (async () => {
             try {
                 this.props.dispatch(alertAction.clear())

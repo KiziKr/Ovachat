@@ -1,76 +1,135 @@
-import { Response } from 'express'
-import { JsonController, Authorized, Post, CurrentUser, Res, Body, BodyParam, Get } from 'routing-controllers'
+import { JsonController, Authorized, Post, CurrentUser, Get, Param, OnUndefined, HttpError, BodyParam } from 'routing-controllers'
 import { User } from '../models/user'
-import { RoomService } from '../services/RoomService'
+import { RoomService } from '../services/RoomService';
+import { UserService } from '../services/UserService'
 import { Room, RoomModel } from '../models/room';
 import { ValidatorService } from '../validators/validatorService'
 
+import { UserNotFoundError, RoomNotFoundError } from '../errors'
+
+/**
+ * Class RoomController
+ */
 @Authorized()
 @JsonController('/rooms')
 export class RoomController {
     constructor(
-        private roomService: RoomService
+        private roomService: RoomService,
+        private userService: UserService
     ) { }
 
-    @Post('/create')
-    public async createRoom(@CurrentUser() user: User, @Body() room: Room, @Res() res: Response) {
-        if (user) {
-            room.owner = user.username
-        }
+    /**
+     * Return all existing room
+     */
+    @Get()
+    public async find(): Promise<Room[]> {
+        return await this.roomService.find()
+    }
 
-        try {
-            return res.send(await ValidatorService.completeEntityValidation(
-                new RoomModel(room)
-            ))
-        } catch (err) {
-            return res.send(err)
+    /**
+     * Return an array of all users from the room passed as a parameter
+     */
+    @Get('/:name/users')
+    @OnUndefined(RoomNotFoundError)
+    public async getUsers(@Param('name') roomName: string): Promise<string[]> {
+        const room = await this.roomService.search(roomName)
+
+        if(room) {
+            return room.users
         }
     }
 
-    @Post('/delete')
-    public async deleteRoom(@CurrentUser() user: User, @BodyParam('name') name: string, @Res() res: Response): Promise<object> {
-        var room = await this.roomService.searchRoom(name)
+    /**
+     * Add a room by using the current user as owner 
+     */
+    @Post('/add/:name')
+    @OnUndefined(UserNotFoundError)
+    public async addRoom(@CurrentUser() user: User, @Param('name') roomName: string): Promise<Room>{
+        if(!user) return
 
-        if (room === undefined) {
-            return res.status(403).send({
-                errors: {
-                    errmsg: "Channel introuvable"
-                }
+        return await ValidatorService.completeEntityValidation(
+            new RoomModel({
+                owner: user.username,
+                name: roomName
             })
+        )
+    }
+
+    /**
+     * 
+     */
+    @Post('/delete/:name')
+    @OnUndefined(UserNotFoundError)
+    public async deleteRoom(@CurrentUser() user: User, @Param('name') roomName: string): Promise<string[]> {
+        if(!user) return
+
+        let room = await this.roomService.search(roomName)
+
+        if(!room) {
+            throw new RoomNotFoundError()
         }
 
-        if (room.owner === user.username) {
-            room.users.forEach(async user => {
-                await this.roomService.joinRoom(user, "Lobby")
-            })
-
-            await RoomModel.remove({ name: room.name })
-
-            return res.status(200).send({
-                data: room.users
-            })
+        if(room.owner !== user.username) {
+            throw new HttpError(500, 'Tu nes pas proprietaire')
         }
 
-        return res.status(403).send({
-            errors: {
-                errmsg: "Ce channel ne t'appartient pas"
+        let usersRoom = room.users
+
+        usersRoom.forEach(async user => {
+            let theUser = await this.userService.getUserByName(user)
+
+            if(theUser) {
+                await this.roomService.join(theUser, 'Lobby')
+                console.log(theUser)
             }
         })
+
+        //await RoomModel.remove({ name: roomName })
+        return usersRoom
     }
 
-    @Post('/join')
-    public async joinRoom(@CurrentUser() user: User, @BodyParam('roomName') roomName: string, @Res() res: Response) {
-        const room = await this.roomService.joinRoom(user, roomName)
+    /**
+     * Join room by name if user is not one of them.
+     */
+    @Post('/join/:name')
+    @OnUndefined(UserNotFoundError)
+    public async join(@CurrentUser() user: User, @Param('name') roomName: string): Promise<Room> {
+        if(!user) return
 
-        if (room[0]) {
-            return res.status(403).send({ errors: room })
+        const result = await this.roomService.join(user, roomName)
+
+        if(!result) {
+            throw new RoomNotFoundError()
         }
 
-        return res.status(200).send(room)
+        return result
     }
 
-    @Get('/test')
-    public test(@Res() res: Response) {
-        return res.send({data: "Ok"})
+    /**
+     * Set name of the room passed as a parameter
+     */
+    @Post('/set/name')
+    @OnUndefined(UserNotFoundError)
+    public async setName(@CurrentUser() user: User, @BodyParam('name', {required: true}) name: string, @BodyParam('newName', {required: true}) newName: string) {
+        const room = await this.roomService.search(name)
+
+        if(!room) {
+            throw new RoomNotFoundError()
+        }
+
+        if(room.owner === user.username) {
+            let test = new RoomModel(room).setName(newName)
+
+            return new Promise((resolve, reject) => {
+                test.save(function (next) {
+                    if (next) {
+                        return reject(next)
+                    }
+                    return resolve(room)
+                })
+            })
+        }
+
+        throw new HttpError(401, 'Tu nes pas proprietaire')
     }
 }

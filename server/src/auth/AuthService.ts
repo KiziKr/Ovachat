@@ -31,7 +31,7 @@ export class AuthService {
     /**
      * 
      */
-    public parseAuthFromRequest(req: express.Request): { id: ObjectID | undefined } {
+    public parseAuthFromRequest(req: express.Request): { id: ObjectID } | undefined  {
         const authorization = req.headers['authorization'];
 
         if (authorization) {

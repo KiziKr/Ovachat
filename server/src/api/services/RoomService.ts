@@ -8,42 +8,45 @@ export class RoomService {
     /**
      * 
      */
-    public async joinRoom(user: User, nameRoom: string): Promise<Room | string[]> {
-        const room = await this.searchRoom(nameRoom)
-        var errors: string[] = []
-
-        if (room === undefined) {
-            errors.push("Channel introuvable")
-        }
-
-        var roomModel = new RoomModel(room)
-
-        if (user.room_id.equals(roomModel._id)) {
-            errors.push("Tu fais déjà parti de ce channel")
-        }
-
-        if(errors.length > 0) {
-            return errors
-        }
-
-        return new UserModel(user).addRoom(roomModel)
+    public async find(): Promise<Room[] | undefined> {
+        return await RoomModel.find()
     }
 
     /**
      * 
      */
-    public async searchRoom(nameRoom: string): Promise<Room | undefined> {
+    public async join(user: User, nameRoom: string): Promise<Room> {
+        const room = await this.search(nameRoom)
+
+        if(!room) {
+            return undefined
+        }
+
+        let roomUser = await this.search(user.getRoom())
+        
+        if(new RoomModel(room).users.indexOf(user.username) !== -1) {
+            return undefined
+        }
+
+        if(roomUser) {
+            let userModel = new UserModel(user)
+            await new RoomModel(roomUser).removeUser(userModel)
+            await new RoomModel(room).addUser(userModel)
+            return room
+        }
+
+        return undefined
+    }
+
+    /**
+     * 
+     */
+    public async search(nameRoom: string, options?: any): Promise<Room | undefined> {
         const room = await RoomModel.findOne({
-            name: nameRoom
+            name: nameRoom,
+            options
         })
-
-        return (room === null)
-            ? undefined
-            : room
+        
+        return (room) ? room:undefined
     }
-
-    /**
-     * 
-     */
-
 }

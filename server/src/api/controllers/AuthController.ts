@@ -1,12 +1,16 @@
-import { Authorized, JsonController, Post, Body, BodyParam, Res, CurrentUser } from 'routing-controllers';
+import "reflect-metadata";
+import { JsonController, Post, Body, BodyParam, Res, CurrentUser, NotFoundError, Get, HttpError, OnUndefined, Param} from 'routing-controllers';
 import {Response} from "express";
 
-import { AuthService } from '../../auth/AuthService'
-import { UserService } from '../services/UserService'
+import { AuthService } from '../../auth/AuthService';
+import { UserService } from '../services/UserService';
 
-import { User, UserModel } from '../models/user'
+import { User, UserModel } from '../models/user';
 
 const jwt = require('jsonwebtoken')
+
+
+import { UserNotFoundError } from '../errors/UserNotFoundError';
 
 @JsonController('/users')
 export class AuthController {
@@ -14,6 +18,14 @@ export class AuthController {
         private authService: AuthService,
         private userService: UserService
     ){}
+
+    /**
+     * 
+     */
+    @Get('/test')
+    public test(@Res() res: Response) {
+        throw new NotFoundError('test')
+    }
 
     /**
      * 

@@ -2,7 +2,7 @@ import { pre, arrayProp, prop, Typegoose, instanceMethod, InstanceType } from "t
 import { ObjectID } from "bson";
 const bcrypt = require('bcrypt');
 
-import { Room, RoomModel } from './room'
+import { RoomModel } from './room'
 
 @pre<User>('save', function (next) {
     var user = this;
@@ -40,19 +40,19 @@ export class User extends Typegoose {
     @prop({ default: ['visiteur'] })
     roles: string[]
 
-    @prop({default : new ObjectID("5c5d4a9b96b4bd115e586a18")})
-    room_id: ObjectID
+    @prop()
+    room_name: string
 
     @instanceMethod
-    addRoom(this: InstanceType<User>, room: InstanceType<Room>): Promise<Room | undefined> {
-        var theRoom = room.addUser(this)
+    setRoom(this: InstanceType<User>, roomName: string): InstanceType<User> {
+        this.room_name = roomName
 
-        if(theRoom) {
-            UserModel.findOneAndUpdate({username : this.username}, {room_id : room._id}, {upsert:true}, function(err, doc){
-            });
-        }
+        return this
+    }
 
-        return theRoom
+    @instanceMethod
+    getRoom(): string {
+        return this.room_name
     }
 
     @prop({default: 0})

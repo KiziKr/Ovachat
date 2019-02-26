@@ -22,7 +22,8 @@ this.app = require("http").Server(this.app);
 this.io = require("socket.io")(this.app);
 
 useSocketServer(this.io, {
-  controllers: [__dirname + "/api/controllers/*.ts"]
+  controllers: [__dirname + "/api/controllers/*.ts"],
+  middlewares: [__dirname + "/api/middlewares/*.ts"]
 });
 
 useExpressServer(this.exp, {
@@ -43,7 +44,8 @@ useExpressServer(this.exp, {
     return await authService.currentUserChecker(action.request)
   },
   cors: true,
-  controllers: [__dirname + "/api/controllers/*.ts"]
+  controllers: [__dirname + "/api/controllers/*.ts"],
+  middlewares: [__dirname + "/api/middlewares/*.ts"]
 });
 
 this.app.on('connection', function (socket) {

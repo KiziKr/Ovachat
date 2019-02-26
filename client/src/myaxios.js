@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const myaxios = axios.create({
+const API = axios.create({
     baseURL:'http://localhost:3001/api',
     config: {
         headers: {
@@ -9,4 +9,4 @@ const myaxios = axios.create({
     }
 })
 
-export default myaxios
+export default API
