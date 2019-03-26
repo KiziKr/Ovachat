@@ -47,7 +47,7 @@ class RegisterPage extends Component {
 
         return(
             <div>
-                <h3>S'inscrire</h3>
+                <h3>Sinscrire</h3>
                 <Form className="auth-form" onSubmit={this.handleSubmit}>
                     <Form.Item className="auth-item">
                         <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Pseudo" onChange={(e) => {
